@@ -2,6 +2,14 @@ import {Component} from "react";
 
 
 export class Login extends Component {
+    constructor() {
+        super();
+
+        this.state = {
+            user: null,
+            status: ''
+        }
+    }
 
    componentDidMount() {
        _init();
@@ -9,22 +17,32 @@ export class Login extends Component {
 
    _init() {
        // fetching the user to check if he is logged in
+       //ETY: do this in mount and not for each render
        axios.get("http://localhost:3000/user/current")
-           .then(function (res) {
+           .then((res) => {
             this.setState({user: res.data.user})
        });
    }
 
     _onSubmit() {
         // creating a post request to log the user in
-        //ETY; pass parameters in post data at request body and not in URL for security matter
+        //ETY: pass parameters in post data at request body and not in URL for security matter
         //consider using encryption as well
         axios.post("http://localhost:3000/user/login", {
             pass: this.refs.pass.value,
             user: this.refs.user.value,
-        }).then(function (res) {
+        }).then((res) => {
             // if got a user in return, set the state
-            if (res.data.user) {this.setState({user: res.data.user})}
+            if (res.data.user) {
+                this.setState({user: res.data.user})
+            }
+            else {
+                //ETY: handle login error
+                //consider disaplying a more specific error - what exactly went wrong
+                this.setState({status: "there was an error in login"})
+            }
+        }).catch(error => {
+            this.setState({status: error})
         });
     }
 
@@ -35,11 +53,13 @@ export class Login extends Component {
     render() {
         // if the user is not logged in
         if (!this.state.user) {
-            return <form onSubmit={this._onSubmit}>
+            return <div><form onSubmit={this._onSubmit}>
                         <input type="text" ref="user" name="email"/><br/>
                         <input type="text" ref="pass" name="pass"/><br/>
                         <button type="submit"/>
                     </form>
+                <div>{this.state.status}</>
+            </div>
         }
         else {
             // printing the user name Capitalized

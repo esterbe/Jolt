@@ -3,16 +3,16 @@ const config = require('config');
 
 //Ety: use a connection pool instead of a single connection
 var pool = mysql.createPool(config.mysql);
-var db = (function () {
+var db = (() => {
     function _query(query, params, callback) {
-        pool.getConnection(function (err, connection) {
+        pool.getConnection( (err, connection) => {
             if (err) {
                 connection.release();
                 callback(null, err);
                 throw err;
             }
 
-            connection.query(query, params, function (err, rows) {
+            connection.query(query, params, (err, rows) => {
                 connection.release();
                 if (!err) {
                     callback(rows);
@@ -23,7 +23,7 @@ var db = (function () {
 
             });
 
-            connection.on('error', function (err) {
+            connection.on('error', (err) => {
                 connection.release();
                 callback(null, err);
                 throw err;

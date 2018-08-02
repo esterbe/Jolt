@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import CommentList from "./components/comments/commentList";
+import Login from "./components/login";
 import autoBind from 'auto-bind-es5';
 
 import './app.css';
@@ -14,7 +14,7 @@ class App extends Component {
     render() {
         return (
             <div className="app">
-                <CommentList />
+                <Login />
             </div>
         );
     }
